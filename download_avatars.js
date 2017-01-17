@@ -19,12 +19,36 @@ function getRepoContributors(repoOwner, repoName, cb) {
 
     let parsedBody = JSON.parse(body)
 
-    let avatarUrls = parsedBody.map(item => item.avatar_url)
+    // let result = parsedBody.map(item => {
+    //   return {
+    //     login: item.login,
+    //     avatar_url: item.avatar_url
+    //   }
+    // })
 
+    console.log(parsedBody)
+
+    let result = parsedBody.map(item => ({
+      login: "./avatars/" + item.login + ".jpg",
+      avatar_url: item.avatar_url
+    }))
+
+    console.log(result)
+    return cb(error, result)
 
   })
 
 }
+
+getRepoContributors(process.argv[2], process.argv[3], function(err, result) {
+  if (err !== null) {
+    console.log("Errors:", err);
+  }
+  result.forEach(function(item) {
+    downloadImageByURL(item.avatar_url, item.login)
+  })
+
+});
 
 function downloadImageByURL(url, filePath) {
 
@@ -39,12 +63,7 @@ request.get(url)
 
 }
 
-downloadImageByURL("https://avatars2.githubusercontent.com/u/2741?v=3&s=466", "avatars/kvirani.jpg")
 
-// getRepoContributors("jquery", "jquery", function(err, result) {
-//   console.log("Errors:", err);
-//   console.log("Result:", result);
-// });
 
 
 
